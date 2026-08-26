@@ -39,90 +39,133 @@
   wireCopyButton('copyCaFooter', 'caValueFooter');
 
   /* ---------------------------------------------------------
-     SOUND — synthesized with Web Audio API, off by default
+     BRINGING THE OFFICE PHOTO TO LIFE
+     ---------------------------------------------------------
+     The photo is shown with object-fit:cover, so it's cropped
+     differently on every screen. We can't pin overlays (his eyes,
+     the mug, the keyboard) with plain CSS percentages — those drift
+     as soon as the crop changes. Instead we reproduce the cover math
+     in JS from the image's real pixel size and re-place every overlay
+     in real pixels on load / resize, so they always land exactly on
+     the photo no matter the viewport.
+  --------------------------------------------------------- */
+  const IMG_W = 1792, IMG_H = 592;
+  // hand-picked landmark points, in the original photo's pixel space
+  const POINTS = {
+    eyeL:     { x: 818, y: 247 },
+    eyeR:     { x: 914, y: 246 },
+    mug:      { x: 657, y: 425 },
+    pawL:     { x: 958, y: 422 },
+    pawR:     { x: 1015, y: 438 },
+    screen:   { x: 1090, y: 355 }
+  };
+
+  const officeScene = document.getElementById('office');
+  const overlayEls = {
+    eyeL: document.querySelector('.eyelid-l'),
+    eyeR: document.querySelector('.eyelid-r'),
+    mug: document.querySelector('.steam-wrap'),
+    pawL: document.querySelector('.paw-l'),
+    pawR: document.querySelector('.paw-r'),
+    screenGlow: document.getElementById('screenGlow'),
+    screenTicker: document.getElementById('screenTicker')
+  };
+
+  function computeCoverMap(containerW, containerH) {
+    const scale = Math.max(containerW / IMG_W, containerH / IMG_H);
+    const dispW = IMG_W * scale, dispH = IMG_H * scale;
+    return { scale, offX: (containerW - dispW) / 2, offY: (containerH - dispH) / 2 };
+  }
+
+  function placeOverlays() {
+    if (!officeScene) return;
+    const rect = officeScene.getBoundingClientRect();
+    const map = computeCoverMap(rect.width, rect.height);
+    const toLocal = (p) => ({ x: map.offX + p.x * map.scale, y: map.offY + p.y * map.scale });
+
+    // left/top only — every overlay's own CSS (or its keyframes) already
+    // bakes in the translate(-50%,-50%) centering, so we never touch
+    // `transform` here and never fight the running blink/tap animations.
+    const setPos = (el, p) => {
+      if (!el) return;
+      const local = toLocal(p);
+      el.style.left = local.x + 'px';
+      el.style.top = local.y + 'px';
+    };
+
+    setPos(overlayEls.eyeL, POINTS.eyeL);
+    setPos(overlayEls.eyeR, POINTS.eyeR);
+    setPos(overlayEls.mug, POINTS.mug);
+    setPos(overlayEls.pawL, POINTS.pawL);
+    setPos(overlayEls.pawR, POINTS.pawR);
+    setPos(overlayEls.screenGlow, POINTS.screen);
+    setPos(overlayEls.screenTicker, { x: POINTS.screen.x, y: POINTS.screen.y - 55 });
+  }
+
+  placeOverlays();
+  window.addEventListener('resize', placeOverlays);
+  // the photo has its own slow "Ken Burns" zoom, so the cover math technically
+  // drifts a hair over time — recomputing occasionally keeps it pixel-tight
+  setInterval(placeOverlays, 4000);
+
+  // little ticker of nonsense numbers on the laptop screen, just for flavor
+  const tickerEl = overlayEls.screenTicker;
+  if (tickerEl) {
+    setInterval(() => {
+      const up = Math.random() > 0.35;
+      const pct = (Math.random() * 9 + 0.1).toFixed(1);
+      tickerEl.textContent = (up ? '+' : '-') + pct + '%';
+      tickerEl.style.color = up ? '#7bffb0' : '#ff7b8f';
+      tickerEl.style.textShadow = up ? '0 0 6px rgba(123,255,176,.8)' : '0 0 6px rgba(255,123,143,.8)';
+    }, 900);
+  }
+
+  /* ---------------------------------------------------------
+     SOUND — a soft synthesized keyboard clack, off by default
   --------------------------------------------------------- */
   let audioCtx = null;
   let soundOn = false;
-  let runningLoopStop = null;
+  let typingLoopStop = null;
 
   function ctx() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     return audioCtx;
   }
 
-  function playWhoosh() {
-    const c = ctx();
-    const dur = 0.9;
-    const bufferSize = c.sampleRate * dur;
-    const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
-    const noise = c.createBufferSource();
-    noise.buffer = buffer;
-    const filter = c.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(400, c.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(2200, c.currentTime + dur * 0.6);
-    filter.frequency.exponentialRampToValueAtTime(300, c.currentTime + dur);
-    const gain = c.createGain();
-    gain.gain.setValueAtTime(0.0001, c.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.5, c.currentTime + 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
-    noise.connect(filter).connect(gain).connect(c.destination);
-    noise.start();
-    noise.stop(c.currentTime + dur);
-  }
-
-  function playMeowYelp() {
-    const c = ctx();
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(340, c.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(900, c.currentTime + 0.12);
-    osc.frequency.exponentialRampToValueAtTime(520, c.currentTime + 0.3);
-    gain.gain.setValueAtTime(0.0001, c.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.35, c.currentTime + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.35);
-    osc.connect(gain).connect(c.destination);
-    osc.start();
-    osc.stop(c.currentTime + 0.4);
-  }
-
-  function startRunningLoop() {
+  function startTypingLoop() {
     const c = ctx();
     let stopped = false;
     const master = c.createGain();
     master.gain.value = 0.0001;
-    master.gain.exponentialRampToValueAtTime(0.22, c.currentTime + 0.3);
+    master.gain.exponentialRampToValueAtTime(0.18, c.currentTime + 0.3);
     master.connect(c.destination);
 
-    function footstep(time) {
+    function clack(time) {
       if (stopped) return;
-      const bufferSize = c.sampleRate * 0.08;
+      const bufferSize = Math.floor(c.sampleRate * 0.03);
       const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
       const src = c.createBufferSource();
       src.buffer = buffer;
       const f = c.createBiquadFilter();
-      f.type = 'lowpass';
-      f.frequency.value = 900;
+      f.type = 'highpass';
+      f.frequency.value = 1200 + Math.random() * 800;
       const g = c.createGain();
-      g.gain.setValueAtTime(0.6, time);
-      g.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+      g.gain.setValueAtTime(0.5 + Math.random() * 0.3, time);
+      g.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
       src.connect(f).connect(g).connect(master);
       src.start(time);
-      src.stop(time + 0.09);
+      src.stop(time + 0.04);
     }
 
-    let nextStep = c.currentTime;
-    const interval = 0.23;
+    let nextKey = c.currentTime + 0.1;
     function scheduler() {
       if (stopped) return;
-      while (nextStep < c.currentTime + 0.2) {
-        footstep(nextStep);
-        nextStep += interval;
+      while (nextKey < c.currentTime + 0.2) {
+        clack(nextKey);
+        // irregular typing rhythm, occasional short pause
+        nextKey += Math.random() < 0.12 ? 0.35 + Math.random() * 0.3 : 0.07 + Math.random() * 0.09;
       }
       requestAnimationFrame(scheduler);
     }
@@ -130,8 +173,8 @@
 
     return () => {
       stopped = true;
-      master.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.25);
-      setTimeout(() => master.disconnect(), 400);
+      master.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.2);
+      setTimeout(() => master.disconnect(), 350);
     };
   }
 
@@ -141,115 +184,12 @@
     soundBtn.textContent = soundOn ? '🔊' : '🔇';
     if (soundOn) {
       ctx().resume();
-      if (hasTriggered) runningLoopStop = startRunningLoop();
-    } else if (runningLoopStop) {
-      runningLoopStop();
-      runningLoopStop = null;
+      typingLoopStop = startTypingLoop();
+    } else if (typingLoopStop) {
+      typingLoopStop();
+      typingLoopStop = null;
     }
   });
-
-  /* ---------------------------------------------------------
-     THE TRANSITION — office -> flash -> running
-  --------------------------------------------------------- */
-  let hasTriggered = false;
-  const screenGlow = document.getElementById('screenGlow');
-  const flashOverlay = document.getElementById('flashOverlay');
-  const runTrigger = document.getElementById('runTrigger');
-  const bridgeSection = document.getElementById('bridge');
-
-  function triggerRun() {
-    if (hasTriggered) {
-      bridgeSection.scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
-    hasTriggered = true;
-    screenGlow.classList.add('pumping');
-    if (soundOn) playWhoosh();
-
-    setTimeout(() => {
-      flashOverlay.classList.add('show');
-      if (soundOn) playMeowYelp();
-      bridgeSection.scrollIntoView({ behavior: 'instant' in document.documentElement.style ? 'instant' : 'auto' });
-    }, 260);
-
-    setTimeout(() => {
-      flashOverlay.classList.remove('show');
-      if (soundOn) runningLoopStop = startRunningLoop();
-    }, 1300);
-  }
-
-  runTrigger.addEventListener('click', triggerRun);
-
-  // Autoplay: the site should open like a short animation/video, not wait for
-  // a click. Give the visitor a beat to register the office scene and the
-  // $ASHCAT title, then run the whole "he sees the candle and bolts" sequence
-  // automatically. Manual click/scroll below still work as a no-op-safe fallback.
-  setTimeout(() => {
-    if (!hasTriggered) triggerRun();
-  }, 1500);
-
-  // auto-trigger once the office scene is mostly scrolled past, as a backup path
-  let autoArmed = true;
-  window.addEventListener('scroll', () => {
-    if (!autoArmed || hasTriggered) return;
-    const rect = bridgeSection.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.6) {
-      autoArmed = false;
-      triggerRun();
-    }
-  }, { passive: true });
-
-  /* ---------------------------------------------------------
-     DUST PUFFS at the runner's feet
-  --------------------------------------------------------- */
-  const dustLayer = document.getElementById('dustLayer');
-  setInterval(() => {
-    if (!dustLayer) return;
-    const puff = document.createElement('div');
-    puff.className = 'dust-puff';
-    puff.style.left = (Math.random() * 20 - 10) + 'px';
-    dustLayer.appendChild(puff);
-    setTimeout(() => puff.remove(), 700);
-  }, 150);
-
-  /* ---------------------------------------------------------
-     SPEED LINES
-  --------------------------------------------------------- */
-  const speedLayer = document.getElementById('speedlines');
-  function spawnSpeedline() {
-    if (!speedLayer) return;
-    const line = document.createElement('div');
-    line.className = 'speedline';
-    const top = 15 + Math.random() * 60;
-    const width = 60 + Math.random() * 160;
-    const dur = 0.7 + Math.random() * 0.9;
-    line.style.top = top + '%';
-    line.style.right = '-10%';
-    line.style.width = width + 'px';
-    line.style.animationDuration = dur + 's';
-    speedLayer.appendChild(line);
-    setTimeout(() => line.remove(), dur * 1000 + 100);
-  }
-  setInterval(spawnSpeedline, 180);
-
-  /* ---------------------------------------------------------
-     FLYING COINS
-  --------------------------------------------------------- */
-  const coinLayer = document.getElementById('coinsLayer');
-  const coinEmojis = ['🪙', '💰', '💵'];
-  function spawnCoin() {
-    if (!coinLayer) return;
-    const coin = document.createElement('div');
-    coin.className = 'coin';
-    coin.textContent = coinEmojis[Math.floor(Math.random() * coinEmojis.length)];
-    coin.style.top = (10 + Math.random() * 55) + '%';
-    coin.style.left = (70 + Math.random() * 25) + '%';
-    const dur = 3 + Math.random() * 2.5;
-    coin.style.animationDuration = dur + 's';
-    coinLayer.appendChild(coin);
-    setTimeout(() => coin.remove(), dur * 1000 + 100);
-  }
-  setInterval(spawnCoin, 900);
 
   /* ---------------------------------------------------------
      STATS — demo simulation, swaps to real DexScreener data
@@ -257,12 +197,12 @@
   --------------------------------------------------------- */
   const statPrice = document.getElementById('statPrice');
   const statMcap = document.getElementById('statMcap');
-  const statDistance = document.getElementById('statDistance');
+  const statKeys = document.getElementById('statDistance');
   const statCoffee = document.getElementById('statCoffee');
 
   let demoPrice = 0.0000042;
-  let distance = 0;
-  let coffee = 3;
+  let keysPressed = 0;
+  let coffeeDeclined = 0;
 
   function formatUsd(n) {
     if (n < 0.01) return '$' + n.toFixed(8);
@@ -271,12 +211,12 @@
 
   function tickDemoStats() {
     demoPrice = Math.max(0.0000001, demoPrice * (1 + (Math.random() - 0.42) * 0.06));
-    distance += Math.floor(20 + Math.random() * 60);
-    if (Math.random() < 0.04) coffee += 1;
+    keysPressed += Math.floor(8 + Math.random() * 30);
+    if (Math.random() < 0.05) coffeeDeclined += 1;
     if (statPrice) statPrice.textContent = formatUsd(demoPrice);
     if (statMcap) statMcap.textContent = formatUsd(demoPrice * 1_000_000_000);
-    if (statDistance) statDistance.textContent = distance.toLocaleString('en-US') + ' m';
-    if (statCoffee) statCoffee.textContent = coffee.toLocaleString('en-US');
+    if (statKeys) statKeys.textContent = keysPressed.toLocaleString('en-US');
+    if (statCoffee) statCoffee.textContent = coffeeDeclined.toLocaleString('en-US');
   }
 
   async function fetchRealStats() {
@@ -302,7 +242,7 @@
       setInterval(tickDemoStats, 1400);
     } else {
       setInterval(fetchRealStats, 15000);
-      setInterval(() => { distance += 40; if (statDistance) statDistance.textContent = distance.toLocaleString('en-US') + ' m'; }, 1400);
+      setInterval(() => { keysPressed += 15; if (statKeys) statKeys.textContent = keysPressed.toLocaleString('en-US'); }, 1400);
     }
   })();
 

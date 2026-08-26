@@ -1,5 +1,5 @@
 /* ========================================================
-   $ASHCAT — Cat Sales... no wait, Cat Escape Office
+   $ASHCAT — Still Typing (the office banner, brought to life)
    ======================================================== */
 
 :root{
@@ -13,9 +13,6 @@
   --rainbow-4: #3bff8f;
   --rainbow-5: #3bd0ff;
   --rainbow-6: #b23bff;
-  --sky-top: #2d1e6b;
-  --sky-mid: #a13d8f;
-  --sky-low: #ff9457;
   --font-display: 'Baloo 2', system-ui, sans-serif;
   --font-body: 'Space Grotesk', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -107,19 +104,25 @@ a{ color: inherit; }
   font-size:.92rem;
 }
 
-/* ================= SCENE 1: OFFICE ================= */
+/* ================= HERO: THE DESK ================= */
 .office-scene{
   display:flex; align-items:flex-end;
 }
+.office-bg-wrap{ position:absolute; inset:0; overflow:hidden; }
 .office-bg{
   position:absolute; inset:0; width:100%; height:100%;
   object-fit: cover; object-position: 50% 35%;
-  filter: brightness(.62) saturate(1.05);
+  filter: brightness(.82) saturate(1.08);
+  animation: kenBurns 22s ease-in-out infinite alternate;
+}
+@keyframes kenBurns{
+  0%   { transform: scale(1) translate(0,0); }
+  100% { transform: scale(1.07) translate(-0.6%, -0.4%); }
 }
 .office-overlay{
   position:absolute; inset:0;
   background:
-    linear-gradient(0deg, rgba(23,17,10,.92) 0%, rgba(23,17,10,.55) 42%, rgba(23,17,10,.15) 70%, rgba(23,17,10,.35) 100%);
+    linear-gradient(0deg, rgba(23,17,10,.92) 0%, rgba(23,17,10,.45) 38%, rgba(23,17,10,.08) 62%, rgba(23,17,10,.28) 100%);
 }
 .office-content{
   position:relative; z-index:2;
@@ -133,7 +136,7 @@ a{ color: inherit; }
 }
 .title{
   font-family: var(--font-display); font-weight:800;
-  font-size: clamp(3rem, 11vw, 7rem);
+  font-size: clamp(2.6rem, 8vw, 5rem);
   margin: 0; line-height:1;
   color:#fff;
   text-shadow: 0 0 40px rgba(232,178,61,.35);
@@ -146,220 +149,98 @@ a{ color: inherit; }
   line-height:1.5;
 }
 .subtitle em{ color: var(--rainbow-3); font-style:normal; }
-.cta-btn{
-  font-family: var(--font-display); font-weight:700; font-size:1rem;
-  background: linear-gradient(90deg, var(--rainbow-1), var(--rainbow-2), var(--rainbow-3));
-  color:#171225; border:none; border-radius: 999px;
-  padding: .95rem 2.1rem; cursor:pointer;
-  display:inline-flex; align-items:center; gap:.5rem;
-  box-shadow: 0 8px 26px rgba(255,140,50,.35);
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-.cta-btn:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 30px rgba(255,140,50,.5); }
-.cta-btn .arrow{ display:inline-block; animation: bounceArrow 1.4s ease-in-out infinite; }
-@keyframes bounceArrow{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(4px);} }
 .hint{ margin-top:1rem; font-size:.75rem; opacity:.5; }
 
 .screen-glow{
-  position:absolute; left:53%; top:52%;
+  position:absolute; left:0; top:0;
   width: 90px; height: 60px;
   transform: translate(-50%,-50%);
   background: radial-gradient(ellipse at center, rgba(80,255,140,.55), transparent 70%);
   filter: blur(6px);
-  animation: screenPulse 2.4s ease-in-out infinite;
+  animation: screenPulse 2.6s ease-in-out infinite;
   pointer-events:none;
-  z-index:1;
+  z-index:3;
 }
-@keyframes screenPulse{ 0%,100%{ opacity:.45;} 50%{ opacity:1;} }
-.screen-glow.pumping{ background: radial-gradient(ellipse at center, rgba(80,255,140,.95), transparent 70%); }
+@keyframes screenPulse{ 0%,100%{ opacity:.4;} 45%{ opacity:1;} 55%{opacity:.55;} 100%{opacity:.4;} }
 
-/* ================= FLASH TRANSITION ================= */
-.flash-overlay{
-  position: fixed; inset:0; z-index: 90;
-  background: radial-gradient(circle at 55% 55%, #eaffef 0%, #8dffb0 35%, #1c8f4a 100%);
-  opacity:0; pointer-events:none;
-  display:flex; align-items:center; justify-content:center;
-  transition: opacity .18s ease;
+/* little bits of "life" laid over the office photo — positioned in JS
+   (script.js) to the mascot's actual eyes/mug/keyboard, because the photo
+   is shown with object-fit:cover and crops differently on every screen. */
+.eyelid{
+  position:absolute; left:0; top:0;
+  width: 30px; height:16px;
+  background: linear-gradient(180deg, #c7c0b8, #948c84);
+  border-radius: 50%;
+  transform: translate(-50%,-50%) scaleY(0.04);
+  transform-origin:center;
+  filter: blur(.3px);
+  pointer-events:none; z-index:3;
+  animation: blink 5.2s ease-in-out infinite;
 }
-.flash-overlay.show{ opacity:1; pointer-events:all; }
-.flash-text{
-  font-family: var(--font-display); font-weight:800;
-  font-size: clamp(1.8rem, 6vw, 3.6rem);
-  color:#0d3d1f;
-  text-align:center; padding: 0 1rem;
-  transform: scale(.85);
+.eyelid-r{ animation-delay: .04s; }
+@keyframes blink{
+  0%, 92%, 100% { transform: translate(-50%,-50%) scaleY(0.04); }
+  95%           { transform: translate(-50%,-50%) scaleY(1); }
+  97%           { transform: translate(-50%,-50%) scaleY(0.04); }
+}
+
+.screen-ticker{
+  position:absolute; left:0; top:0;
+  transform: translate(-50%,-50%);
+  font-family: var(--font-mono); font-weight:700; font-size: 11px;
+  color: #7bffb0; text-shadow: 0 0 6px rgba(123,255,176,.8);
+  pointer-events:none; z-index:3; white-space:nowrap;
+}
+
+.paw{
+  position:absolute; left:0; top:0;
+  width: 30px; height:18px;
+  background: radial-gradient(ellipse at center, rgba(255,252,244,.95), rgba(255,252,244,0) 72%);
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.55));
+  border-radius:50%;
+  transform: translate(-50%,-50%);
+  pointer-events:none; z-index:6;
+  animation: pawTap 0.5s ease-in-out infinite;
+}
+.paw-r{ animation-delay: .25s; }
+@keyframes pawTap{
+  0%, 100%{ transform: translate(-50%,-40%) scale(1,.7); opacity:.65; }
+  40%     { transform: translate(-50%,-70%) scale(.9,1.1); opacity:1; }
+  55%     { transform: translate(-50%,-40%) scale(1,.7); opacity:.65; }
+}
+
+.steam-wrap{ position:absolute; left:0; top:0; z-index:2; pointer-events:none; }
+.steam{
+  position:absolute; left:0; bottom:0;
+  width: 10px; height: 34px;
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.55));
+  border-radius: 50%;
+  filter: blur(3px);
   opacity:0;
+  animation: steamRise 3.6s ease-in infinite;
 }
-.flash-overlay.show .flash-text{
-  animation: flashPop .9s ease forwards;
-}
-@keyframes flashPop{
-  0%{ opacity:0; transform: scale(.7); }
-  25%{ opacity:1; transform: scale(1.05); }
-  75%{ opacity:1; transform: scale(1); }
-  100%{ opacity:0; transform: scale(1.1); }
-}
-
-/* ================= SCENE 2: RAINBOW BRIDGE ================= */
-.bridge-scene{
-  display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
-  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-low) 100%);
-}
-.sky{ position:absolute; inset:0; overflow:hidden; }
-.sun{
-  position:absolute; left:50%; top:38%; width: 260px; height:260px;
-  background: radial-gradient(circle, #fff6d8 0%, #ffd76b 45%, rgba(255,183,60,0) 72%);
-  border-radius:50%; transform: translate(-50%,-50%);
-  animation: sunGlow 5s ease-in-out infinite;
-}
-@keyframes sunGlow{ 0%,100%{ opacity:.85;} 50%{ opacity:1;} }
-.skyline{
-  position:absolute; left:0; right:0; bottom:32%; height: 120px;
-  background:
-    repeating-linear-gradient(90deg, rgba(15,10,30,.55) 0 40px, transparent 40px 70px),
-    linear-gradient(0deg, rgba(15,10,30,.55), rgba(15,10,30,0));
-  mask-image: linear-gradient(0deg, black 60%, transparent 100%);
-  opacity:.7;
-}
-.cloud{
-  position:absolute; width: 180px; height:56px; border-radius:50px;
-  background: rgba(255,255,255,.35); filter: blur(2px);
-}
-.cloud::before, .cloud::after{
-  content:''; position:absolute; background: rgba(255,255,255,.35); border-radius:50%;
-}
-.cloud::before{ width:90px; height:90px; top:-40px; left:15px; }
-.cloud::after{ width:70px; height:70px; top:-28px; right:20px; }
-.c1{ top:14%; left:-10%; animation: driftCloud 38s linear infinite; }
-.c2{ top:22%; left:-30%; animation: driftCloud 52s linear infinite; animation-delay:-10s; opacity:.7; transform: scale(.7); }
-.c3{ top:9%; left:-50%; animation: driftCloud 64s linear infinite; animation-delay:-25s; opacity:.5; transform: scale(1.3); }
-@keyframes driftCloud{ from{ transform: translateX(0);} to{ transform: translateX(160vw);} }
-
-.road-wrap{
-  position:absolute; left:0; right:0; bottom:0; height: 58%;
-  perspective: 380px; perspective-origin: 50% 0%;
-  overflow:hidden;
-}
-.road{
-  position:absolute; left:50%; bottom:0; width: 220%; height:100%;
-  transform: translateX(-50%) rotateX(58deg);
-  transform-origin: bottom center;
-  background:
-    repeating-linear-gradient(180deg,
-      var(--rainbow-1) 0 8%, var(--rainbow-2) 8% 16%, var(--rainbow-3) 16% 24%,
-      var(--rainbow-4) 24% 32%, var(--rainbow-5) 32% 40%, var(--rainbow-6) 40% 48%,
-      var(--rainbow-1) 48% 56%, var(--rainbow-2) 56% 64%, var(--rainbow-3) 64% 72%,
-      var(--rainbow-4) 72% 80%, var(--rainbow-5) 80% 88%, var(--rainbow-6) 88% 96%, var(--rainbow-1) 96% 100%);
-  background-size: 100% 340px;
-  animation: roadRun 0.38s linear infinite;
-  box-shadow: 0 0 90px 20px rgba(255,255,255,.25) inset;
-}
-@keyframes roadRun{ from{ background-position: 0 0; } to{ background-position: 0 340px; } }
-.road-glow{
-  position:absolute; left:0; right:0; bottom:0; height: 58%;
-  background: linear-gradient(0deg, rgba(255,255,255,.5), transparent 60%);
-  mix-blend-mode: overlay; pointer-events:none;
+.steam.s2{ animation-delay: 1.2s; left:-6px; }
+.steam.s3{ animation-delay: 2.4s; left:6px; }
+@keyframes steamRise{
+  0%   { transform: translate(-50%,0) scale(1); opacity:0; }
+  15%  { opacity:.5; }
+  60%  { opacity:.3; }
+  100% { transform: translate(-50%,-70px) scale(1.8); opacity:0; }
 }
 
-.speedlines{ position:absolute; inset:0; pointer-events:none; z-index:3; }
-.speedline{
-  position:absolute; height:2px; border-radius:2px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
-  animation-name: speedFly; animation-timing-function: linear; animation-iteration-count: infinite;
-}
-@keyframes speedFly{ from{ transform: translateX(0); opacity:0;} 10%{opacity:1;} 90%{opacity:1;} to{ transform: translateX(-140vw); opacity:0;} }
-
-.coins{ position:absolute; inset:0; pointer-events:none; z-index:3; }
-.coin{
-  position:absolute; font-size: 1.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
-  animation-name: coinFly; animation-timing-function: linear; animation-iteration-count: infinite;
-}
-@keyframes coinFly{
-  from{ transform: translate(10vw, 0) rotate(0deg); opacity:0; }
-  10%{ opacity:1; }
-  90%{ opacity:1; }
-  to{ transform: translate(-120vw, -8vh) rotate(360deg); opacity:0; }
-}
-
-.runner-wrap{
+/* ================= CA / ACTIONS BAR ================= */
+.cta-bar{
   position:relative; z-index:5;
-  width: min(46vw, 340px);
-  margin-bottom: 3vh;
-  display:flex; justify-content:center;
+  display:flex; flex-direction:column; align-items:center;
+  gap: 1.1rem;
+  padding: 2.4rem 1.25rem;
+  background: linear-gradient(180deg, var(--office-dark), var(--ink));
 }
-/* He faces the camera (not a side-view sprite), so a literal leg-swing reads
-   as broken rather than "running" — the honest cue for a front-on runner is
-   a fast, punchy bounce with squash/stretch + a side-to-side weight shift,
-   sold hard by the road/dust/speed-lines rushing past underneath him. */
-.runner{
-  position:relative; z-index:2; width:100%; height:auto;
-  transform-origin: 50% 96%;
-  animation: runSprint 0.42s cubic-bezier(.35,.02,.4,1) infinite;
-  filter: drop-shadow(0 16px 12px rgba(0,0,0,.45));
-}
-@keyframes runSprint{
-  0%   { transform: translate(-1.5%,0)    rotate(-5deg) scale(1.05,.93); }
-  20%  { transform: translate(-0.5%,-22%) rotate(3deg)  scale(.95,1.07); }
-  45%  { transform: translate(1%,-4%)     rotate(1deg)  scale(1.02,.98); }
-  70%  { transform: translate(1.5%,-24%)  rotate(-3deg) scale(.95,1.07); }
-  100% { transform: translate(-1.5%,0)    rotate(-5deg) scale(1.05,.93); }
-}
-.runner-blur{
-  position:absolute; z-index:1; inset:0;
-  background-image: url('assets/mascot-cutout.png');
-  background-size: contain; background-repeat:no-repeat; background-position: bottom center;
-  filter: blur(11px) brightness(1.1);
-  opacity:.4;
-  transform: translateX(16%) scale(.94);
-  animation: runSprint 0.42s cubic-bezier(.35,.02,.4,1) infinite;
-  animation-delay: -0.07s;
-}
-.runner-blur-2{
-  opacity:.22;
-  filter: blur(18px) brightness(1.15);
-  transform: translateX(28%) scale(.9);
-  animation-delay: -0.14s;
-}
-.dust{ position:absolute; left:8%; bottom:-4px; width:1px; height:1px; z-index:1; }
-.dust-puff{
-  position:absolute; bottom:0; width: 26px; height:14px; border-radius:50%;
-  background: radial-gradient(ellipse at center, rgba(255,255,255,.75), rgba(255,255,255,0) 70%);
-  animation: dustPuff 0.42s ease-out forwards;
-}
-@keyframes dustPuff{
-  0%{ transform: translate(0,0) scale(.4); opacity:.8; }
-  100%{ transform: translate(-70px,-6px) scale(1.8); opacity:0; }
-}
-.ground-shadow{
-  position:absolute; left:50%; bottom:-6px; width:52%; height:16px;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,.45), transparent 72%);
-  transform: translateX(-50%);
-  animation: shadowPulse 0.42s ease-in-out infinite;
-  z-index:0;
-}
-@keyframes shadowPulse{ 0%,100%{ transform: translateX(-50%) scaleX(1);} 50%{ transform: translateX(-50%) scaleX(.75);} }
-
-.bridge-copy{
-  position:relative; z-index:5; text-align:center; margin-bottom: 1.4rem;
-  padding: 0 1rem;
-}
-.kicker{
-  font-family: var(--font-mono); font-size:.72rem; letter-spacing:.14em;
-  color: rgba(255,255,255,.75); margin:0 0 .35rem; font-weight:700;
-}
-.bridge-copy h2{
-  font-family: var(--font-display); font-weight:800;
-  font-size: clamp(1.2rem, 3.4vw, 2rem);
-  margin:0; color:#fff;
-  text-shadow: 0 2px 18px rgba(0,0,0,.35);
-}
-
 .ca-box{
-  position:relative; z-index:5;
-  background: rgba(10,6,20,.55); backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.05); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.18);
   border-radius: 16px; padding: .8rem 1.1rem;
-  margin: 0 1rem 1.2rem; max-width: 480px; width: calc(100% - 2rem);
+  max-width: 480px; width: 100%;
   text-align:center;
 }
 .ca-label{ font-family: var(--font-mono); font-size:.68rem; letter-spacing:.12em; opacity:.65; display:block; margin-bottom:.3rem; }
@@ -375,9 +256,7 @@ a{ color: inherit; }
 .copy-btn.small{ font-size:.62rem; padding:.28rem .65rem; }
 
 .action-row{
-  position:relative; z-index:5;
   display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center;
-  margin-bottom: 3.2rem; padding: 0 1rem;
 }
 .action-btn{
   text-decoration:none; font-family: var(--font-display); font-weight:700; font-size:.88rem;
@@ -444,6 +323,13 @@ a{ color: inherit; }
 /* ================= RESPONSIVE ================= */
 @media (max-width: 760px){
   .nav-links{ display:none; }
-  .runner-wrap{ width: 62vw; }
   .section{ padding: 3.6rem 1.1rem; }
+  .cta-bar{ padding: 2rem 1.1rem; }
+  /* the banner is a wide 3:1 desk shot — on a tall phone screen
+     min-height:100vh forces object-fit:cover to zoom in so far that
+     the mug/keyboard/screen fall outside the crop entirely and only
+     the face is left. Capping the hero height keeps the whole desk
+     in frame so the overlay effects still land on something visible. */
+  .office-scene{ min-height: 92vw; }
+  .office-content{ padding: 0 1.2rem 2.4rem; }
 }

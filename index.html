@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>$ASHCAT — He Saw The Candle</title>
-<meta name="description" content="$ASHCAT — the most professional cat in crypto. Composed at his desk. Unstoppable the moment the chart turns green.">
+<title>$ASHCAT — Still Typing</title>
+<meta name="description" content="$ASHCAT — the most disciplined cat in crypto. Never blinks at the chart. Never stops typing. Never goes home.">
 <link rel="icon" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +15,8 @@
 
 <div class="marquee-top" aria-hidden="true">
   <div class="marquee-track">
-    <span>🐾 $ASHCAT IS RUNNING &nbsp; 🌈 OFFICE HOURS ARE OVER &nbsp; 🚀 NEW ATH INCOMING &nbsp; 🐱 DO NOT DISTURB THE CAT &nbsp; 💼 RESIGNATION LETTER: NONE &nbsp; </span>
-    <span>🐾 $ASHCAT IS RUNNING &nbsp; 🌈 OFFICE HOURS ARE OVER &nbsp; 🚀 NEW ATH INCOMING &nbsp; 🐱 DO NOT DISTURB THE CAT &nbsp; 💼 RESIGNATION LETTER: NONE &nbsp; </span>
+    <span>⌨️ $ASHCAT IS STILL TYPING &nbsp; ☕ MUG STATUS: FULL &nbsp; 📊 NEVER BLINKS AT THE CHART &nbsp; 🐱 DO NOT DISTURB THE CAT &nbsp; 💼 RESIGNATION LETTER: NONE &nbsp; </span>
+    <span>⌨️ $ASHCAT IS STILL TYPING &nbsp; ☕ MUG STATUS: FULL &nbsp; 📊 NEVER BLINKS AT THE CHART &nbsp; 🐱 DO NOT DISTURB THE CAT &nbsp; 💼 RESIGNATION LETTER: NONE &nbsp; </span>
   </div>
 </div>
 
@@ -38,61 +38,40 @@
 
 <main id="top">
 
-  <!-- ================= SCENE 1: THE OFFICE ================= -->
+  <!-- ================= HERO: THE DESK ================= -->
   <section id="office" class="scene office-scene">
-    <img class="office-bg" src="assets/mascot-office.jpg" alt="ASHCAT working late at the office, laptop, coffee mug that says C.E.O., coins and a card on the desk">
+    <div class="office-bg-wrap">
+      <img class="office-bg" src="assets/mascot-office.jpg" alt="ASHCAT typing at his office desk, laptop, a coffee mug that says C.E.O., coins and a card on the table">
+    </div>
     <div class="office-overlay"></div>
 
-    <div class="office-content">
-      <p class="eyebrow">OFFICE HOURS: 9–5, ALLEGEDLY</p>
-      <h1 class="title">$ASHCAT</h1>
-      <p class="subtitle">The most professional cat in crypto.<br>
-        Bow tie: on. Spreadsheets: filed. Composure: <em>temporary</em>.</p>
-      <button id="runTrigger" class="cta-btn">
-        <span>WATCH HIM RUN</span> <span class="arrow">↓</span>
-      </button>
-      <p class="hint">psst — check his laptop screen.</p>
-    </div>
+    <!-- little bits of life laid over the photo -->
+    <div class="eyelid eyelid-l"></div>
+    <div class="eyelid eyelid-r"></div>
 
     <div class="screen-glow" id="screenGlow"></div>
+    <div class="screen-ticker" id="screenTicker">+0.0%</div>
+
+    <div class="paw paw-l"></div>
+    <div class="paw paw-r"></div>
+
+    <div class="steam-wrap">
+      <span class="steam s1"></span>
+      <span class="steam s2"></span>
+      <span class="steam s3"></span>
+    </div>
+
+    <div class="office-content">
+      <p class="eyebrow">STATUS: STILL TYPING</p>
+      <h1 class="title">$ASHCAT</h1>
+      <p class="subtitle">The most disciplined cat in crypto.<br>
+        Never blinks at the chart. Never stops typing. Never <em>once</em> gone home.</p>
+      <p class="hint">psst — watch the mug, the eyes, the keyboard.</p>
+    </div>
   </section>
 
-  <!-- ================= FLASH TRANSITION ================= -->
-  <div class="flash-overlay" id="flashOverlay">
-    <div class="flash-text" id="flashText">HE SAW THE CANDLE.</div>
-  </div>
-
-  <!-- ================= SCENE 2: THE RAINBOW BRIDGE ================= -->
-  <section id="bridge" class="scene bridge-scene">
-    <div class="sky">
-      <div class="sun"></div>
-      <div class="cloud c1"></div>
-      <div class="cloud c2"></div>
-      <div class="cloud c3"></div>
-      <div class="skyline"></div>
-    </div>
-
-    <div class="road-wrap">
-      <div class="road"></div>
-      <div class="road-glow"></div>
-    </div>
-
-    <div class="speedlines" id="speedlines"></div>
-    <div class="coins" id="coinsLayer"></div>
-
-    <div class="runner-wrap">
-      <div class="runner-blur"></div>
-      <div class="runner-blur runner-blur-2"></div>
-      <img class="runner" src="assets/mascot-cutout.png" alt="ASHCAT mascot sprinting full body across a rainbow bridge">
-      <div class="dust" id="dustLayer"></div>
-      <div class="ground-shadow"></div>
-    </div>
-
-    <div class="bridge-copy">
-      <p class="kicker">HE IS NOT COMING BACK TO THE OFFICE</p>
-      <h2>+ RUNNING SINCE THE FIRST GREEN CANDLE</h2>
-    </div>
-
+  <!-- ================= CA / ACTIONS BAR ================= -->
+  <section class="cta-bar">
     <div class="ca-box">
       <span class="ca-label">CONTRACT ADDRESS</span>
       <div class="ca-row">
@@ -100,7 +79,6 @@
         <button id="copyCa" class="copy-btn">COPY</button>
       </div>
     </div>
-
     <div class="action-row">
       <a href="#howto" class="action-btn buy">BUY $ASHCAT</a>
       <a href="#" target="_blank" rel="noopener" class="action-btn chart">CHART (SOON)</a>
@@ -113,26 +91,26 @@
     <h2 class="section-title">THE FILE ON $ASHCAT</h2>
     <div class="lore-grid">
       <article class="lore-card">
-        <div class="lore-icon">💼</div>
-        <h3>THE OFFICE</h3>
-        <p>Head of Feline Resources. Files reports nobody reads, in a font nobody asked for. Refills the C.E.O. mug exactly twice a day. Widely regarded as the calmest cat on the floor.</p>
+        <div class="lore-icon">🖥️</div>
+        <h3>THE DESK</h3>
+        <p>Head of Feline Resources. This is not a metaphorical desk — it is the only desk he has ever sat at. Nobody has seen him stand up. Some suspect he can't anymore. Nobody has asked.</p>
+      </article>
+      <article class="lore-card">
+        <div class="lore-icon">☕</div>
+        <h3>THE MUG</h3>
+        <p>The "C.E.O." mug is refilled every morning at 9:00 sharp and has never once been empty by 5:00. Not because he doesn't drink coffee. Because he has never had time to pick it up.</p>
       </article>
       <article class="lore-card">
         <div class="lore-icon">📈</div>
         <h3>THE CANDLE</h3>
-        <p>12:47 PM, lunch break. He glanced at the chart to be polite. It was green. It was very green. Something that had been sitting quietly in him for years stood up first — the rest of him followed.</p>
-      </article>
-      <article class="lore-card">
-        <div class="lore-icon">🌈</div>
-        <h3>THE BRIDGE</h3>
-        <p>Nobody knows where the rainbow bridge came from, why it goes where it goes, or who is paying for the toll. He didn't ask questions. He just ran, in full view of the building, bow tie flapping in the wind.</p>
+        <p>12:47 PM, lunch break. He glanced at the chart to be polite. It was green. It was very green. He typed slightly faster and did not look up again.</p>
       </article>
     </div>
   </section>
 
   <!-- ================= STATS ================= -->
   <section id="stats" class="section stats-section">
-    <h2 class="section-title">LIVE OFFICE-ESCAPE REPORT</h2>
+    <h2 class="section-title">LIVE DESK REPORT</h2>
     <p class="section-sub">Auto-connects to real market data the moment the contract goes live. Until then — an honest simulation.</p>
     <div class="stats-grid">
       <div class="stat-card">
@@ -144,11 +122,11 @@
         <span class="stat-value" id="statMcap">$0</span>
       </div>
       <div class="stat-card">
-        <span class="stat-label">DISTANCE RUN</span>
-        <span class="stat-value" id="statDistance">0 m</span>
+        <span class="stat-label">KEYS PRESSED TODAY</span>
+        <span class="stat-value" id="statDistance">0</span>
       </div>
       <div class="stat-card">
-        <span class="stat-label">COFFEE CUPS ABANDONED</span>
+        <span class="stat-label">COFFEE REFILLS DECLINED</span>
         <span class="stat-value" id="statCoffee">0</span>
       </div>
     </div>
@@ -156,17 +134,17 @@
 
   <!-- ================= HOW TO BUY ================= -->
   <section id="howto" class="section howto-section">
-    <h2 class="section-title">HOW TO CATCH HIM</h2>
+    <h2 class="section-title">HOW TO GET HIS ATTENTION</h2>
     <div class="howto-grid">
       <div class="howto-step">
         <span class="step-num">01</span>
         <h3>GET A WALLET</h3>
-        <p>Download Phantom or any Solana wallet. This is where your $ASHCAT will live once he stops running.</p>
+        <p>Download Phantom or any Solana wallet. This is where your $ASHCAT will live — he's certainly not delivering it in person.</p>
       </div>
       <div class="howto-step">
         <span class="step-num">02</span>
         <h3>GET SOME SOL</h3>
-        <p>Buy SOL on any exchange and send it to your wallet. He runs fast — arrive with fuel already in the tank.</p>
+        <p>Buy SOL on any exchange and send it to your wallet. He won't wait for you. He's typing.</p>
       </div>
       <div class="howto-step">
         <span class="step-num">03</span>
@@ -176,7 +154,7 @@
       <div class="howto-step">
         <span class="step-num">04</span>
         <h3>HOLD ON TIGHT</h3>
-        <p>Tighter than his bow tie. He's not slowing down for anyone.</p>
+        <p>He's not going anywhere. Statistically, neither should you.</p>
       </div>
     </div>
   </section>
