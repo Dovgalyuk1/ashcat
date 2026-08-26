@@ -117,7 +117,7 @@
     }
 
     let nextStep = c.currentTime;
-    const interval = 0.31;
+    const interval = 0.23;
     function scheduler() {
       if (stopped) return;
       while (nextStep < c.currentTime + 0.2) {
@@ -180,6 +180,14 @@
 
   runTrigger.addEventListener('click', triggerRun);
 
+  // Autoplay: the site should open like a short animation/video, not wait for
+  // a click. Give the visitor a beat to register the office scene and the
+  // $ASHCAT title, then run the whole "he sees the candle and bolts" sequence
+  // automatically. Manual click/scroll below still work as a no-op-safe fallback.
+  setTimeout(() => {
+    if (!hasTriggered) triggerRun();
+  }, 1500);
+
   // auto-trigger once the office scene is mostly scrolled past, as a backup path
   let autoArmed = true;
   window.addEventListener('scroll', () => {
@@ -202,7 +210,7 @@
     puff.style.left = (Math.random() * 20 - 10) + 'px';
     dustLayer.appendChild(puff);
     setTimeout(() => puff.remove(), 700);
-  }, 220);
+  }, 150);
 
   /* ---------------------------------------------------------
      SPEED LINES

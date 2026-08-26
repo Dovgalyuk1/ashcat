@@ -251,7 +251,7 @@ a{ color: inherit; }
       var(--rainbow-1) 48% 56%, var(--rainbow-2) 56% 64%, var(--rainbow-3) 64% 72%,
       var(--rainbow-4) 72% 80%, var(--rainbow-5) 80% 88%, var(--rainbow-6) 88% 96%, var(--rainbow-1) 96% 100%);
   background-size: 100% 340px;
-  animation: roadRun 0.7s linear infinite;
+  animation: roadRun 0.38s linear infinite;
   box-shadow: 0 0 90px 20px rgba(255,255,255,.25) inset;
 }
 @keyframes roadRun{ from{ background-position: 0 0; } to{ background-position: 0 340px; } }
@@ -287,34 +287,44 @@ a{ color: inherit; }
   margin-bottom: 3vh;
   display:flex; justify-content:center;
 }
+/* He faces the camera (not a side-view sprite), so a literal leg-swing reads
+   as broken rather than "running" — the honest cue for a front-on runner is
+   a fast, punchy bounce with squash/stretch + a side-to-side weight shift,
+   sold hard by the road/dust/speed-lines rushing past underneath him. */
 .runner{
   position:relative; z-index:2; width:100%; height:auto;
-  transform-origin: 50% 95%;
-  animation: runCycle 0.62s ease-in-out infinite;
-  filter: drop-shadow(0 18px 14px rgba(0,0,0,.4));
+  transform-origin: 50% 96%;
+  animation: runSprint 0.42s cubic-bezier(.35,.02,.4,1) infinite;
+  filter: drop-shadow(0 16px 12px rgba(0,0,0,.45));
 }
-@keyframes runCycle{
-  0%   { transform: translateY(0) rotate(-3deg); }
-  25%  { transform: translateY(-13%) rotate(2deg); }
-  50%  { transform: translateY(-2%) rotate(-4deg); }
-  75%  { transform: translateY(-15%) rotate(3deg); }
-  100% { transform: translateY(0) rotate(-3deg); }
+@keyframes runSprint{
+  0%   { transform: translate(-1.5%,0)    rotate(-5deg) scale(1.05,.93); }
+  20%  { transform: translate(-0.5%,-22%) rotate(3deg)  scale(.95,1.07); }
+  45%  { transform: translate(1%,-4%)     rotate(1deg)  scale(1.02,.98); }
+  70%  { transform: translate(1.5%,-24%)  rotate(-3deg) scale(.95,1.07); }
+  100% { transform: translate(-1.5%,0)    rotate(-5deg) scale(1.05,.93); }
 }
 .runner-blur{
   position:absolute; z-index:1; inset:0;
   background-image: url('assets/mascot-cutout.png');
   background-size: contain; background-repeat:no-repeat; background-position: bottom center;
-  filter: blur(9px) brightness(1.1);
-  opacity:.45;
-  transform: translateX(18%) scale(.97);
-  animation: runCycle 0.62s ease-in-out infinite;
-  animation-delay: -0.09s;
+  filter: blur(11px) brightness(1.1);
+  opacity:.4;
+  transform: translateX(16%) scale(.94);
+  animation: runSprint 0.42s cubic-bezier(.35,.02,.4,1) infinite;
+  animation-delay: -0.07s;
+}
+.runner-blur-2{
+  opacity:.22;
+  filter: blur(18px) brightness(1.15);
+  transform: translateX(28%) scale(.9);
+  animation-delay: -0.14s;
 }
 .dust{ position:absolute; left:8%; bottom:-4px; width:1px; height:1px; z-index:1; }
 .dust-puff{
   position:absolute; bottom:0; width: 26px; height:14px; border-radius:50%;
   background: radial-gradient(ellipse at center, rgba(255,255,255,.75), rgba(255,255,255,0) 70%);
-  animation: dustPuff 0.62s ease-out forwards;
+  animation: dustPuff 0.42s ease-out forwards;
 }
 @keyframes dustPuff{
   0%{ transform: translate(0,0) scale(.4); opacity:.8; }
@@ -324,7 +334,7 @@ a{ color: inherit; }
   position:absolute; left:50%; bottom:-6px; width:52%; height:16px;
   background: radial-gradient(ellipse at center, rgba(0,0,0,.45), transparent 72%);
   transform: translateX(-50%);
-  animation: shadowPulse 0.62s ease-in-out infinite;
+  animation: shadowPulse 0.42s ease-in-out infinite;
   z-index:0;
 }
 @keyframes shadowPulse{ 0%,100%{ transform: translateX(-50%) scaleX(1);} 50%{ transform: translateX(-50%) scaleX(.75);} }
